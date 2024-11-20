@@ -1,35 +1,42 @@
 package uam.dsti.sb_online_shop;
 
 import jakarta.persistence.*;
-import java.util.List;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ownerid;
+    private Long ownerid;
 
-    private String firstname;
-    private String lastname;
+    private String firstname, lastname;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private List<Car> cars;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "car_owner", joinColumns = { @JoinColumn(name = "ownerid") } , 
+    inverseJoinColumns = { @JoinColumn(name = "id")})
+    private Set<Car> cars = new HashSet<Car>();
+
+    public Set<Car> getCars() {
+        return cars;
+    }
 
     public Owner() {
     }
 
     public Owner(String firstname, String lastname) {
-        super();
         this.firstname = firstname;
         this.lastname = lastname;
     }
 
-    public long getOwnerid() {
+    // Getters et setters
+    public Long getOwnerid() {
         return ownerid;
     }
 
-    public void setOwnerid(long ownerid) {
+    public void setOwnerid(Long ownerid) {
         this.ownerid = ownerid;
     }
 
@@ -47,13 +54,5 @@ public class Owner {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
-    }
-
-    public List<Car> getCars() {
-        return cars;
-    }
-
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
     }
 }
